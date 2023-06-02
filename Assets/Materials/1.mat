@@ -64,7 +64,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _GrassDensity: 8.68
+    - _GrassDensity: 4.68
     - _GrassHeight: 0.05
     - _Metallic: 0
     - _Mode: 0
