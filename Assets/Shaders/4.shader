@@ -1,42 +1,38 @@
 ﻿Shader "Temp/4"
 {
-   Properties {
-        _MainTex ("Main Texture", 2D) = "white" {}
-        _Color ("Color", Color) = (1, 1, 1, 1)
-        _WindStrength ("Wind Strength", Range(0, 1)) = 0.5
-        _BendFactor ("Bend Factor", Range(0, 1)) = 0.5
+   Properties 
+   {
+        _Color ("Color", Color) = (1, 1, 1, 1)  // Параметр для цвета
+        _MainTex ("Texture", 2D) = "white" {}   // Параметр для текстуры
     }
- 
-    SubShader {
-        Tags { "RenderType"="Opaque" }
-        LOD 200
- 
-        CGPROGRAM
-        #pragma surface surf Lambert
- 
-        sampler2D _MainTex;
-        fixed4 _Color;
-        float _WindStrength;
-        float _BendFactor;
- 
-        struct Input {
-            float2 uv_MainTex;
+
+    SubShader 
+    {
+        
+        Tags { "RenderType"="Transporent" }  // Тэги для отображения шейдера
+        LOD 3  // Уровень детализации
+        
+        CGPROGRAM  // Начало кода HLSL
+
+        #pragma surface surf Lambert  // Используем модель освещения Lambert
+        
+        struct Input 
+        {
+            float2 uv_MainTex;  // Входные данные для текстурных координат
         };
- 
-        void surf (Input IN, inout SurfaceOutput o) {
-            fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
-            o.Albedo = c.rgb;
-            o.Alpha = c.a;
-            o.Normal = float3(0, 1, 0);
-            o.Specular = 0;
-            o.Smoothness = 1;
-            o.Emission = 0;
- 
-            // Имитация покачивания травы
-            float bendAmount = sin(_BendFactor * IN.uv_MainTex.x + _WindStrength * _Time.y);
-            o.Position += o.Normal * bendAmount;
+        
+        sampler2D _MainTex;  // Текстурный сэмплер
+        fixed4 _Color;       // Цветовая переменная для передачи из материала
+        
+        void surf (Input IN, inout SurfaceOutput o) 
+        {
+            fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;  // Получаем цвет из текстуры и умножаем на цвет из параметра
+            o.Albedo = c.rgb;  // Задаем цвет поверхности
+            o.Alpha = c.a;     // Задаем альфа-канал поверхности
         }
-        ENDCG
+
+        ENDCG  // Конец кода HLSL
     }
-    FallBack "Diffuse"
+
+    FallBack "Diffuse"  // Запасной вариант, если шейдер не поддерживается
 }
