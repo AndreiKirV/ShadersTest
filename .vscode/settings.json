@@ -1,4 +1,4 @@
-﻿{
+{
     "files.exclude":
     {
         "**/.DS_Store":true,
@@ -51,5 +51,9 @@
         "ProjectSettings/":true,
         "temp/":true,
         "Temp/":true
-    }
+    },
+    "hlsl.openDocOnSide": true,
+    "vssolution.openSolutions.selectedInOmnisharp": false,
+    "hlsl.suggest.basic": true,
+    "diagnostics.enable": true
 }
