@@ -1,13 +1,16 @@
-Shader "Bible/SINCOS"
+Shader "Bible/TAN"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "red" {}
-        _Speed ("Rotation Speed", Range(0, 3)) = 1
+        _Color ("Color", Color) = (1, 1, 1, 1)
+        _Sections ("Sections", Range(2, 99)) = 10
+        _Speed ("Speed",float) = 0
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags {"RenderType"="Transparent" "Queue"="Transparent"}
+        Blend SrcAlpha OneMinusSrcAlpha
         LOD 100
 
         Pass
@@ -15,7 +18,6 @@ Shader "Bible/SINCOS"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
             #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
@@ -35,27 +37,14 @@ Shader "Bible/SINCOS"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _Color;
+            float _Sections;
             float _Speed;
-
-            float3 rotation(float3 vertex)
-            {
-                float c = cos(_Time.y * _Speed);
-                float s = sin(_Time.y * _Speed);
-
-                float3x3 m = float3x3
-                (
-                    c, 0, s, // 1, 0, 0,   /  c, -s, 0
-                    0, 1, 0, // 0, c,-s,   /  s,  c, 0
-                    -s, 0, c // 0, s, c    /  0,  0, 1
-                );
-                return mul(m, vertex);
-            }
 
             v2f vert (appdata v)
             {
                 v2f o;
-                float3 rotVertex = rotation(v.vertex);
-                o.vertex = UnityObjectToClipPos(rotVertex);
+                o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
@@ -63,7 +52,10 @@ Shader "Bible/SINCOS"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
+                float4 tanCol = clamp(0, abs(tan((i.uv.y - tan(_Time.x * _Speed)) * _Sections)), 1) ;
+                tanCol *= _Color;
+
+                fixed4 col = tex2D(_MainTex, i.uv) * tanCol;
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
