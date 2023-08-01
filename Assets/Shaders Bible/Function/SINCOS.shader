@@ -1,9 +1,9 @@
-Shader "Bible/USB_function_ABS"
+Shader "Bible/SINCOS"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _Rotation ("Rotation", Range(0,360)) = 0
+        _MainTex ("Texture", 2D) = "red" {}
+        _Speed ("Rotation Speed", Range(0, 3)) = 1
     }
     SubShader
     {
@@ -35,27 +35,27 @@ Shader "Bible/USB_function_ABS"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Rotation;
+            float _Speed;
 
-            void Unity_Rotate_Degrees_float(float2 UV, float2 Center, float Rotation, out float2 Out)
+            float3 rotation(float3 vertex)
             {
-                Rotation = Rotation * (UNITY_PI/180.0f);
-                UV -= Center;
-                float s = sin(Rotation);
-                float c = cos(Rotation);
-                float2x2 rMatrix = float2x2(c, -s, s, c);
-                rMatrix *= 0.5;
-                rMatrix += 0.5;
-                rMatrix = rMatrix * 2 - 1;
-                UV.xy = mul(UV.yx, rMatrix);
-                UV += Center;
-                Out = UV;
+                float c = cos(_Time.y * _Speed);
+                float s = sin(_Time.y * _Speed);
+
+                float3x3 m = float3x3
+                (
+                    c, 0, s, // 1, 0, 0,   /  c, -s, 0
+                    0, 1, 0, // 0, c,-s,   /  s,  c, 0
+                    -s, 0, c // 0, s, c    /  0,  0, 1
+                );
+                return mul(m, vertex);
             }
 
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                float3 rotVertex = rotation(v.vertex);
+                o.vertex = UnityObjectToClipPos(rotVertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
@@ -63,16 +63,9 @@ Shader "Bible/USB_function_ABS"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float u = abs(i.uv.x - 0.5);
-                float v = abs(i.uv.y - 0.5);
-
-                float rotation = _Rotation;
-                float center = 0.5;
-                float2 uv = 0;
-
-                Unity_Rotate_Degrees_float(float2(u,v), center, rotation, uv);
-
-                fixed4 col = tex2D(_MainTex, uv);
+                // sample the texture
+                fixed4 col = tex2D(_MainTex, i.uv);
+                // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
