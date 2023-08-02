@@ -1,9 +1,8 @@
-Shader "Bible/SINCOS"
+Shader "Bible/STEP"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "red" {}
-        _Speed ("Rotation Speed", Range(0, 3)) = 1
+        _MainTex ("Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -35,37 +34,23 @@ Shader "Bible/SINCOS"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Speed;
-
-            float3 rotation(float3 vertex)
-            {
-                float c = cos(_Time.y * _Speed);
-                float s = sin(_Time.y * _Speed);
-
-                float3x3 m = float3x3
-                (
-                    c, 0, s, // 1, 0, 0,   /  c, -s, 0
-                    0, 1, 0, // 0, c,-s,   /  s,  c, 0
-                    -s, 0, c // 0, s, c    /  0,  0, 1
-                );
-                return mul(m, vertex);
-            }
 
             v2f vert (appdata v)
             {
                 v2f o;
-                float3 rotVertex = rotation(v.vertex);
-                o.vertex = UnityObjectToClipPos(rotVertex);
-                o.uv = v.uv;//TRANSFORM_TEX(v.uv, _MainTex);
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
-                UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                float edge = 0.5;
+                float smooth = 0.1;
+                fixed3 sstep = 0;
+                sstep = smoothstep((i.uv.y - smooth), (i.uv.y + smooth), edge); // sstep = step(i.uv.y, edge);
+                return fixed4(sstep, 1);
             }
             ENDCG
         }

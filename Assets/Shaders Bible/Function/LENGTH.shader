@@ -1,9 +1,11 @@
-Shader "Bible/SINCOS"
+Shader "Bible/LENGTH"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "red" {}
-        _Speed ("Rotation Speed", Range(0, 3)) = 1
+        _MainTex ("Texture", 2D) = "white" {}
+        _Radius ("Radius", Range(0.0, 0.5)) = 0.3
+        _Center ("Center", Range(0, 1)) = 0.5
+        _Smooth ("Smooth", Range(0.0, 0.5)) = 0.01
     }
     SubShader
     {
@@ -35,37 +37,29 @@ Shader "Bible/SINCOS"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Speed;
+            float _Smooth;
+            float _Radius;
+            float _Center;
 
-            float3 rotation(float3 vertex)
+            float circle (float2 p, float center, float radius, float smooth)
             {
-                float c = cos(_Time.y * _Speed);
-                float s = sin(_Time.y * _Speed);
-
-                float3x3 m = float3x3
-                (
-                    c, 0, s, // 1, 0, 0,   /  c, -s, 0
-                    0, 1, 0, // 0, c,-s,   /  s,  c, 0
-                    -s, 0, c // 0, s, c    /  0,  0, 1
-                );
-                return mul(m, vertex);
+                float c = length(p - center);
+                return smoothstep(c - smooth, c + smooth, radius);
             }
 
             v2f vert (appdata v)
             {
                 v2f o;
-                float3 rotVertex = rotation(v.vertex);
-                o.vertex = UnityObjectToClipPos(rotVertex);
-                o.uv = v.uv;//TRANSFORM_TEX(v.uv, _MainTex);
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
-                UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                float c = circle (i.uv, _Center, _Radius, _Smooth);
+                return float4 (c.xxx, 1);
             }
             ENDCG
         }

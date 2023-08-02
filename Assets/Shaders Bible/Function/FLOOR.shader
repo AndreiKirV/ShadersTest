@@ -3,6 +3,8 @@ Shader "Bible/FLOOR"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        [IntRange] _Sections ("Sections", Range(2, 10)) = 5
+        _Gamma ("Gamma", Range (0, 1)) = 0
     }
     SubShader
     {
@@ -12,10 +14,10 @@ Shader "Bible/FLOOR"
         Pass
         {
             CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+            #pragma vertex vert;
+            #pragma fragment frag;
             // make fog work
-            #pragma multi_compile_fog
+            #pragma multi_compile_fog;
 
             #include "UnityCG.cginc"
 
@@ -34,6 +36,8 @@ Shader "Bible/FLOOR"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float _Sections;
+            float _Gamma;
 
             v2f vert (appdata v)
             {
@@ -46,11 +50,10 @@ Shader "Bible/FLOOR"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-                // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                float fv = floor(i.uv.y * _Sections) * (_Sections / 100);
+                //fixed4 col = tex2D(_MainTex, i.uv);
+                //UNITY_APPLY_FOG(i.fogCoord, col);
+                return float4(fv.xxx, 1) + _Gamma;//col;
             }
             ENDCG
         }
