@@ -1,11 +1,8 @@
-Shader "Bible/CLAMP"
+Shader "Unlit/TimingAnimation"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Xvalue ("X", Range(0, 1)) = 0
-        _Avalue ("A", Range(0, 1)) = 0
-        _Bvalue ("B", Range(0, 1)) = 0
     }
     SubShader
     {
@@ -37,29 +34,21 @@ Shader "Bible/CLAMP"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Xvalue;
-            float _Avalue;
-            float _Bvalue;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
-            }
-
-            float ourClamp(float a, float x, float b)
-            {
-                return max(a, min(x, b));
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float darkness = ourClamp(_Avalue, _Xvalue, _Bvalue); // тоже самое clam() // Ста, почему из метода ограничение на б не работает?
-                
-                fixed4 col = tex2D(_MainTex, i.uv) * darkness;
+                //i.uv.x += _Time.y;
+                i.uv.x += _SinTime.w;
+                i.uv.y += _CosTime.w;
+                fixed4 col = tex2D(_MainTex, i.uv);
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }

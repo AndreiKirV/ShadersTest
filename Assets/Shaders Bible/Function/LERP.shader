@@ -25,7 +25,6 @@ Shader "Bible/LERP"
             {
                 float4 vertex : POSITION;
                 float2 uv_s01 : TEXCOORD0;
-                float2 uv_s02 : TEXCOORD1;
             };
 
             struct v2f
@@ -46,7 +45,7 @@ Shader "Bible/LERP"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv_s01 = TRANSFORM_TEX(v.uv_s01, _Skin01);
-                o.uv_s02 = TRANSFORM_TEX(v.uv_s02, _Skin02);
+                o.uv_s02 = TRANSFORM_TEX(v.uv_s01, _Skin02);
                 return o;
             }
 
