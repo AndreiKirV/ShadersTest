@@ -1,4 +1,4 @@
-Shader "Unlit/FRAC"
+Shader "Bible/FRAC"
 {
     Properties
     {
