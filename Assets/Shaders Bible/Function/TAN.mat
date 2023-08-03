@@ -11,8 +11,10 @@ Material:
   m_Shader: {fileID: 4800000, guid: 6039bde73a1daaf438d7036e91fb24e1, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_ValidKeywords:
+  - _DIRECTION_UP
+  m_InvalidKeywords:
+  - _OPTIONS_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -64,6 +66,7 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
+    - _Direction: 0
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -71,6 +74,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _Options: 0
     - _Parallax: 0.02
     - _Sections: 15
     - _SmoothnessTextureChannel: 0

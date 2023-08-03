@@ -44,9 +44,9 @@ Shader "Bible/SINCOS"
 
                 float3x3 m = float3x3
                 (
-                    c, 0, s,// 1, 0, 0,   /  c, -s, 0
-                    0, 1, 0,// 0, c,-s,   /  s,  c, 0
-                    -s,0, c // 0, s, c    /  0,  0, 1
+                    c, 0, s, // 1, 0, 0,   /  c, -s, 0
+                    0, 1, 0, // 0, c,-s,   /  s,  c, 0
+                    -s, 0, c // 0, s, c    /  0,  0, 1
                 );
                 return mul(m, vertex);
             }

@@ -5,6 +5,7 @@ Shader "Bible/LERP"
         _Skin01 ("Skin 01", 2D) = "white" {}
         _Skin02 ("Skin 02", 2D) = "white" {}
         _Lerp ("Lerp", Range(0, 1)) = 0.5
+        _Color ("Color", Color) = (1,1,1,1)
     }
     SubShader
     {
@@ -38,6 +39,7 @@ Shader "Bible/LERP"
             float4 _Skin01_ST;
             sampler2D _Skin02;
             float4 _Skin02_ST;
+            float4 _Color;
             float _Lerp;
 
             v2f vert (appdata v)
@@ -54,7 +56,7 @@ Shader "Bible/LERP"
                 fixed4 skin01 = tex2D(_Skin01, i.uv_s01);
                 fixed4 skin02 = tex2D(_Skin02, i.uv_s02);
                 fixed render = lerp(skin01, skin02, _Lerp);
-                return render;
+                return render * _Color;
             }
             ENDCG
         }
