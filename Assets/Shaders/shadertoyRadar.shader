@@ -4,7 +4,7 @@ Shader "shadertoy/shadertoyRadar"
     {
         _MainTex ("Texture", 2D) = "black" {}
         _Length ("Length", float) = 0
-        _ITime ("ITime", float) = 0
+        _Speed ("Speed", float) = 1
     }
     SubShader
     {
@@ -50,12 +50,12 @@ Shader "shadertoy/shadertoyRadar"
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float _Length;
-            float _ITime;
+            float _Speed;
 
             float movingLine(vec2 uv, vec2 center, float radius)
             {
                 //angle of the line
-                float theta0 = _ITime;
+                float theta0 = _Time.y * _Speed;
                 vec2 d = uv - center;
                 float r = sqrt( dot( d, d ) );
                 if(r < radius)
