@@ -68,14 +68,11 @@ Shader "Unlit/1"
 
                 for(int i = 0; i < MAX_MARCHIG_STEPS; i++)
                 {
-                    float3 ray_position = ray_origin + ray_direction *
-                    distance_origin;
-                    float distance_scene = planeSDF(ray_position);
+                    float3 ray_position = ray_origin + ray_direction * distance_origin;
+                    float distance_scene = planeSDF(ray_position); 
                     distance_origin += distance_scene;
 
-                    if(distance_scene < SURFACE_DISTANCE || distance_origin >
-                    MAX_MARCHIG_STEPS);
-
+                    if(distance_scene < SURFACE_DISTANCE || distance_origin > MAX_MARCHIG_STEPS)
                     break;
                 }
 
@@ -100,18 +97,15 @@ Shader "Unlit/1"
                 float t = sphereCasting(ray_origin, ray_direction);
                 float4 planeCol = 0;
                 float4 circleCol = 0;
-                
-                if(t < MAX_DISTANCE)
-                {
-                    float3 p = ray_origin + ray_direction * t;
-                    float2 uv_p = p.xz;
-                    float l = pow(-abs(_Top), 2) + pow(-abs(_Top) - 1, 2);
-                    float c = length(uv_p);
-                    circleCol = (smoothstep(c - 0.01, c + 0.01, _CircleRad -abs(pow(_Top * (1 * 0.5), 2))));
-                    planeCol = tex2D(_PlaneTex, (uv_p * (1 - abs(pow(_Top * l, 2)))) - 0.5);
-                    planeCol *= circleCol;
-                    planeCol += (1 - circleCol) * _CircleCol;
-                }
+
+                float3 p = ray_origin + ray_direction * t;
+                float2 uv_p = p.xz;
+                float l = pow(-abs(_Top), 2) + pow(-abs(_Top) - 1, 2);
+                float c = length(uv_p);
+                circleCol = (smoothstep(c - 0.01, c + 0.01, _CircleRad - abs(pow(_Top * 0.5, 2))));
+                planeCol = tex2D(_PlaneTex, (uv_p * (1 - abs(pow(_Top * l, 2)))) - 0.5);
+                planeCol *= circleCol;
+                planeCol += (1 - circleCol) * _CircleCol;
 
                 if(col.r == _Color.r && col.g == _Color.g && col.b == _Color.b)
                 discard;
@@ -123,6 +117,7 @@ Shader "Unlit/1"
 
                 return face ? col : planeCol;
             }
+            
             ENDCG
         }
     }

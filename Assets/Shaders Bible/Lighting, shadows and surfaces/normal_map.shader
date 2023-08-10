@@ -76,7 +76,7 @@ Shader "Bible/normal_map"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                /* fixed4 normal_map = tex2D(_NormalMap, i.uv_normal);
+                fixed4 normal_map = tex2D(_NormalMap, i.uv_normal);
                 fixed3 normal_compressed = DXTCompression(normal_map); //UnpackNormal()
                 
                 float3x3 TBN_matrix = float3x3
@@ -86,13 +86,13 @@ Shader "Bible/normal_map"
                     i.normal_world
                 );
 
-                fixed3 normal_color = normalize(mul(normal_compressed, TBN_matrix)); */
+                fixed3 normal_color = normalize(mul(normal_compressed, TBN_matrix));
 
                 fixed4 col = tex2D(_MainTex, i.uv);
                 float3 ambient_color = UNITY_LIGHTMODEL_AMBIENT * _Ambient;
                 col.rgb += ambient_color;
                 
-                return col;//fixed4 (normal_color, 1);
+                return fixed4 (lerp(normal_color, col, 0.5), 1); //col;
             }
             ENDCG
         }
