@@ -3,7 +3,7 @@
     // Определение свойств шейдера
     Properties
     {
-        _Color ("Color", Color) = (1, 1, 1, 1) //цвет
+         //цвет
         _MainTex ("Texture", 2D) = "white" {}// Основная текстура
         _FrontTexture ("FrontTexture", 2D) = "black" {}
         _BackTexture ("BackTexture", 2D) = "red" {}

@@ -61,7 +61,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _Skin01:
         m_Texture: {fileID: 2800000, guid: 3c50e242296c7374aa478f712da0e006, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _Skin02:
         m_Texture: {fileID: 2800000, guid: 17c3104c36c98d84e9b8c7569664159d, type: 3}

@@ -1,11 +1,11 @@
-Shader "Unlit/Temp"
+Shader "Custom/Grass"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Value ("Value", float) = 0
-        _Target("Target", float) = 0
-        _Color ("Color", Color) = (1, 1, 1, 1)
+        _DepthGradientShallow("Depth Gradient Shallow", Color) = (0.325, 0.807, 0.971, 0.725)
+        _DepthGradientDeep("Depth Gradient Deep", Color) = (0.086, 0.407, 1, 0.749)
+        _DepthMaxDistance("Depth Maximum Distance", Float) = 1
     }
     SubShader
     {
@@ -15,9 +15,9 @@ Shader "Unlit/Temp"
         Pass
         {
             CGPROGRAM
+
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
 
@@ -35,22 +35,15 @@ Shader "Unlit/Temp"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Value;
-            float _Target;
-            float4 _Color;
+            float4 _DepthGradientShallow;
+            float4 _DepthGradientDeep;
+            float _DepthMaxDistance;
 
             v2f vert (appdata v)
             {
                 v2f o;
-
-                if(mul(unity_ObjectToWorld, v.vertex).y > _Target)
-                v.vertex.y += _Value;
-                else
-                v.vertex.y -= _Value;
-
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-
                 return o;
             }
 
@@ -59,6 +52,7 @@ Shader "Unlit/Temp"
                 fixed4 col = tex2D(_MainTex, i.uv);
                 return col;
             }
+
             ENDCG
         }
     }

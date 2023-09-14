@@ -67,7 +67,7 @@ Material:
     m_Floats:
     - _Bottom: -1
     - _BumpScale: 1
-    - _CircleRad: 0.5
+    - _CircleRad: 0.396
     - _Cull: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -83,7 +83,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Top: 0.1
+    - _Top: 0.21
     - _UVSec: 0
     - _Value: 0
     - _ZTest: 4
