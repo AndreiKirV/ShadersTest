@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Shaders Bible/USBRendererType/USBRendererType.unity
+    guid: 098a0e5ba6f6b6a4a927fa99e0fe500a
+  - enabled: 1
+    path: Assets/Scenes/ShadersBible.unity
+    guid: 72214278cac46794b85de28d20834742
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
