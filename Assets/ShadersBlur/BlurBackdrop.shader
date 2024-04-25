@@ -3,9 +3,10 @@ Shader "BlurBackdrop"
      Properties
     {
         _MainTex ("Main Texture", 2D) = "white" {}
-        _Factor ("Texture Factor" , Float) = 1
         _Color ("Color" , Color) = (1,1,1,1)
         _EColor ("EColor" , Color) = (1,1,1,1)
+        _OutlineColor ("OutlineColor" , Color) = (1,1,1,1)
+        _OutlineDelta ("OutlineDelta" , Float) = 1
         _Offset ("Offset" , Float) = 0
         _Weight("WeightNewPass", float) = 1
         _PassCount("PassCount", int) = 1
@@ -56,20 +57,18 @@ Shader "BlurBackdrop"
             sampler2D _GrabTexture; 
             float4 _Color;
             float4 _EColor;
-            float4 _MainTex_TexelSize;
-            float4 _MainTex_ST;
+            float4 _OutlineColor;
             float _Offset; 
             float _Weight;
             float _DeltaPass;
-            float _Factor;
+            float _OutlineDelta;
             int _IfOne;
             int _IsMultipliedTexture;
             int _PassCount;
 
             float WeightChange(float descendingScale, float x)
             {
-                float targetWeight = exp(-(x * x) / (2 * descendingScale * descendingScale));
-                return targetWeight;
+                return exp(-(x * x) / (2 * descendingScale * descendingScale));
             }         
 
             v2f vert (appdata v)
@@ -82,20 +81,14 @@ Shader "BlurBackdrop"
                 o.grabPos /= o.grabPos.w;
                 return o;
             }
-
-            float changeFloat(float x)
-            {
-                return exp(x);
-            }
             
             float4 frag (v2f input) : SV_Target
             {
-                float2 res = 1 / _ScreenParams.xy;//float2(1080, 1920);//_MainTex_TexelSize.xy;
+                float2 res = 1 / _ScreenParams.xy;
                 float4 col = tex2D(_MainTex, input.uv);
-                float4 grabColor = float4(1,1,1,1);// = tex2D(_GrabTexture, input.grabPos.xy);
-                float4 tempColor = grabColor;
+                float4 grabColor = float4(1,1,1,1);
+                float4 tempColor = tex2D(_MainTex, input.uv);
                 
-                //for (int i = _PassCount; i >= 1; i--)
                 for (int i = 1; i <= _PassCount; i++)
                 {
                     float targetI = sqrt(i);
@@ -117,9 +110,9 @@ Shader "BlurBackdrop"
                     grabColor.rgb /= i / _Weight;
                 }
 
-                if(col.a > 0)
+                if(tempColor.a > 0)
                 {      
-                    col.rgb = grabColor.rgb / _PassCount / _DeltaPass;// / 3;//(_PassCount * _PassCount);
+                    col.rgb = grabColor.rgb / _PassCount / _DeltaPass;
                     col.rgb *= _Color.rgb;
 
                     if(_IsMultipliedTexture)
@@ -128,9 +121,13 @@ Shader "BlurBackdrop"
                         tempCol.rgb *= _EColor.rgb;
                         col.rgb += tempCol.rgb;
                     }
-                }
 
-                //if()
+                    //переопределение цвета, в зависимости от интенсивности черного - чем чернее, тем ближе к заданному цвету
+                    float intensity = (tempColor.r + tempColor.g + tempColor.b) / 3.0;
+                    float invertedIntensity = 1.0 - intensity;
+                    float4 newColor = lerp(tempColor, _OutlineColor, invertedIntensity * _OutlineDelta);
+                    col.rgb *= newColor.rgb;
+                }
 
 	            return col;
             }
