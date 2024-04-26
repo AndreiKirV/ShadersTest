@@ -19,17 +19,18 @@ Shader "BlurBackdrop"
     {
         Tags
         {
-            "RenderType" = "Transparent"
+            //"RenderType" = "Transparent"
+            "RenderType"="Opaque"
             "Queue" = "Transparent"
         }
 
         Cull Off
         Blend SrcAlpha OneMinusSrcAlpha
 
-        GrabPass
+        /* GrabPass
         {
             "_GrabTexture"
-        }
+        } */
         
         Pass
         {
@@ -55,6 +56,8 @@ Shader "BlurBackdrop"
 
             sampler2D _MainTex; 
             sampler2D _GrabTexture; 
+            sampler2D _CameraOpaqueTexture;
+            sampler2D _CameraSortingLayerTexture;
             float4 _Color;
             float4 _EColor;
             float4 _OutlineColor;
@@ -93,6 +96,8 @@ Shader "BlurBackdrop"
                 {
                     float targetI = sqrt(i);
                     float tempWeight = WeightChange(_PassCount, i);
+                    _GrabTexture = _CameraSortingLayerTexture;
+                    _GrabTexture = _CameraOpaqueTexture;
                     grabColor.rgb += tex2D(_GrabTexture, input.grabPos.xy + float2(_Offset * targetI, _Offset * targetI) * res).rgb * tempWeight * (2 * i * i);//↙
 
                         if(_IfOne == 0)
