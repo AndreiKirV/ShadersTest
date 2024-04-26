@@ -19,9 +19,10 @@ Shader "BlurBackdrop"
     {
         Tags
         {
-            //"RenderType" = "Transparent"
-            "RenderType"="Opaque"
+            "RenderType" = "Transparent"
+            //"RenderType"="Opaque"
             "Queue" = "Transparent"
+            "RenderPipeline" = "UniversalPipeline"
         }
 
         Cull Off
@@ -96,9 +97,10 @@ Shader "BlurBackdrop"
                 {
                     float targetI = sqrt(i);
                     float tempWeight = WeightChange(_PassCount, i);
-                    _GrabTexture = _CameraSortingLayerTexture;
                     _GrabTexture = _CameraOpaqueTexture;
+                    //_GrabTexture = _CameraSortingLayerTexture;
                     grabColor.rgb += tex2D(_GrabTexture, input.grabPos.xy + float2(_Offset * targetI, _Offset * targetI) * res).rgb * tempWeight * (2 * i * i);//↙
+                    //grabColor.rgb += tex2D(_CameraSortingLayerTexture, input.grabPos.xy);
 
                         if(_IfOne == 0)
                         {
