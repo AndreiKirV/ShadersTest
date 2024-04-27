@@ -19,8 +19,8 @@ Shader "BlurBackdrop"
     {
         Tags
         {
-            "RenderType" = "Transparent"
-            //"RenderType"="Opaque"
+            //"RenderType" = "Transparent"
+            "RenderType"="Opaque"
             "Queue" = "Transparent"
             "RenderPipeline" = "UniversalPipeline"
         }
@@ -59,6 +59,8 @@ Shader "BlurBackdrop"
             sampler2D _GrabTexture; 
             sampler2D _CameraOpaqueTexture;
             sampler2D _CameraSortingLayerTexture;
+            sampler2D _CameraColorTexture;
+            
             float4 _Color;
             float4 _EColor;
             float4 _OutlineColor;
@@ -136,6 +138,7 @@ Shader "BlurBackdrop"
                     col.rgb *= newColor.rgb;
                 }
 
+                //col = tex2D(_CameraColorTexture, input.grabPos.xy);
 	            return col;
             }
             ENDCG
