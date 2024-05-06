@@ -100,7 +100,7 @@ Shader "BlurBackdrop"
                     float targetI = sqrt(i);
                     float tempWeight = WeightChange(_PassCount, i);
                     _GrabTexture = _CameraOpaqueTexture;
-                    //_GrabTexture = _CameraSortingLayerTexture;
+                    //_GrabTexture = _CameraColorTexture;
                     grabColor.rgb += tex2D(_GrabTexture, input.grabPos.xy + float2(_Offset * targetI, _Offset * targetI) * res).rgb * tempWeight * (2 * i * i);//↙
                     //grabColor.rgb += tex2D(_CameraSortingLayerTexture, input.grabPos.xy);
 
@@ -139,7 +139,7 @@ Shader "BlurBackdrop"
                 }
 
                 //col = tex2D(_CameraColorTexture, input.grabPos.xy);
-	            return col;
+	            return col;//tex2D(_CameraColorTexture, input.grabPos.xy + float2(_Offset, -_Offset) * res) * _EColor;//col;
             }
             ENDCG
         }
