@@ -22,7 +22,7 @@ Shader "BlurBackdrop"
             //"RenderType" = "Transparent"
             "RenderType"="Opaque"
             "Queue" = "Transparent"
-            "RenderPipeline" = "UniversalPipeline"
+            "RenderPipeline" = "UniversalRenderPipeline"
         }
 
         Cull Off
